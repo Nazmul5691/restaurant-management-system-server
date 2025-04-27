@@ -34,10 +34,19 @@ async function run() {
 
 
 
+        const usersCollection = client.db("hungryHut").collection("users")
         const menuCollection = client.db("hungryHut").collection("menu")
         const reviewCollection = client.db("hungryHut").collection("reviews")
         const cartCollection = client.db("hungryHut").collection("carts")
         
+
+        // users related api
+        app.post('/users', async(req, res) =>{
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        })
+
 
         app.get('/menu', async(req, res) =>{
             const result = await menuCollection.find().toArray()
