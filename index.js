@@ -43,6 +43,12 @@ async function run() {
         // users related api
         app.post('/users', async(req, res) =>{
             const user = req.body;
+            // insert user if user doesn't exit (email unique, upsert , simple checking)
+            const query = { email : user.email}
+            const exitingUser = await usersCollection.findOne(query);
+            if(exitingUser){
+                return res.send({message: 'user already exits', insertedId: null});
+            }
             const result = await usersCollection.insertOne(user);
             res.send(result);
         })
