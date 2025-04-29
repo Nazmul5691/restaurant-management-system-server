@@ -38,53 +38,59 @@ async function run() {
         const menuCollection = client.db("hungryHut").collection("menu")
         const reviewCollection = client.db("hungryHut").collection("reviews")
         const cartCollection = client.db("hungryHut").collection("carts")
-        
+
 
         // users related api
-        app.post('/users', async(req, res) =>{
+        app.get('/users', async (req, res) => {
+            const result = await usersCollection.find().toArray();
+            res.send(result);
+        })
+
+
+        app.post('/users', async (req, res) => {
             const user = req.body;
             // insert user if user doesn't exit (email unique, upsert , simple checking)
-            const query = { email : user.email}
+            const query = { email: user.email }
             const exitingUser = await usersCollection.findOne(query);
-            if(exitingUser){
-                return res.send({message: 'user already exits', insertedId: null});
+            if (exitingUser) {
+                return res.send({ message: 'user already exits', insertedId: null });
             }
             const result = await usersCollection.insertOne(user);
             res.send(result);
         })
 
 
-        app.get('/menu', async(req, res) =>{
+        app.get('/menu', async (req, res) => {
             const result = await menuCollection.find().toArray()
             res.send(result);
         })
 
 
-        app.get('/review', async(req, res) =>{
+        app.get('/review', async (req, res) => {
             const result = await reviewCollection.find().toArray()
             res.send(result);
         })
 
 
         // carts collection
-        app.get('/carts', async(req, res) =>{
+        app.get('/carts', async (req, res) => {
             const email = req.query.email;
-            const query = { email: email}
+            const query = { email: email }
             const result = await cartCollection.find(query).toArray()
             res.send(result)
         })
 
 
-        app.post('/carts', async(req, res) =>{
+        app.post('/carts', async (req, res) => {
             const item = req.body;
             const result = await cartCollection.insertOne(item)
             res.send(result)
         })
 
 
-        app.delete('/carts/:id', async(req, res) =>{
-            const id =req.params.id;
-            const query = {_id: new ObjectId(id)};
+        app.delete('/carts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
             const result = await cartCollection.deleteOne(query);
             res.send(result);
         })
