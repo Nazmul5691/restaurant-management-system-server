@@ -47,6 +47,14 @@ async function run() {
         })
 
 
+        app.delete('/users/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await usersCollection.deleteOne(query);
+            res.send(result);
+        })
+
+
         app.post('/users', async (req, res) => {
             const user = req.body;
             // insert user if user doesn't exit (email unique, upsert , simple checking)
